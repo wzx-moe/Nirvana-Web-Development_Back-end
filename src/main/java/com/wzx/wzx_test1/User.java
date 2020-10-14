@@ -3,6 +3,9 @@ package com.wzx.wzx_test1;
 public class User {
     private String UserName;
 
+
+    private String PassWord;
+
     public String getUserName() {
         return UserName;
     }
@@ -11,11 +14,7 @@ public class User {
         return PassWord;
     }
 
-    private String PassWord;
-
-
-
-    public void setUserName( String userName ){
+    public void setUserName(String userName ){
         this.UserName = userName;
     }
 
