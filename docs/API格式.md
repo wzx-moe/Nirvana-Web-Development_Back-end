@@ -15,6 +15,7 @@
 ```
 
 注意:
+
 * 服务端接口在任何情况下都返回200, 通过success字段判断是否成功, 不要返回4xx/5xx之类的错误
 * 一般禁止3xx重定向
 * 所有请求, 如果要传参数的, 一般用post, 否则用get
@@ -28,7 +29,8 @@
 * 说明：获得当前登录的用户名，是否登录完全由后端判断
 * 是否必需：是
 * 输入：不需要任何参数
-* 输出：如果当前用户未登录则返回success=false，例如`{"code":10,"data":null,"message":"not login yet","success":false,"total":null}`；已登录则返回登录的用户名，例如`{"code":0,"data":"guest","message":"","success":true,"total":null}`
+* 输出：如果当前用户未登录则返回success=false，例如`{"code":10,"data":null,"message":"not login yet","success":false,"total":null}`
+  ；已登录则返回登录的用户名，例如`{"code":0,"data":"guest","message":"","success":true,"total":null}`
 
 ### 获取验证码
 
@@ -43,7 +45,8 @@
 * 接口名：`/api/login`
 * 说明：校验用户的登录信息，成功的话返回当前登录的用户名
 * 是否必需：是
-* 输入：request body是一个表单(`Content-Type=application/x-www-form-urlencoded`)，包含三个参数`username`/`password`/`authcode`，后端根据token验证验证码，同时验证用户名和密码
+* 输入：request body是一个表单(`Content-Type=application/x-www-form-urlencoded`)，包含三个参数`username`/`password`/`authcode`
+  ，后端根据token验证验证码，同时验证用户名和密码
 * 输出：成功的话返回登录后的用户名，例如：`{"code":0,"data":"guest","message":"","success":true,"total":null}`，否则返回错误信息。
 
 ### 注册

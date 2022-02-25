@@ -9,6 +9,14 @@ import java.util.Date;
 public class DateConverter implements Converter<String, Date> {
     private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 
+    public static SimpleDateFormat getSimpleDateFormat() {
+        return simpleDateFormat;
+    }
+
+    public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
+        this.simpleDateFormat = simpleDateFormat;
+    }
+
     @Override
     public Date convert(String source) {
         if ("".equals(source) || source == null) {
@@ -20,13 +28,5 @@ public class DateConverter implements Converter<String, Date> {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static SimpleDateFormat getSimpleDateFormat() {
-        return simpleDateFormat;
-    }
-
-    public void setSimpleDateFormat(SimpleDateFormat simpleDateFormat) {
-        this.simpleDateFormat = simpleDateFormat;
     }
 }

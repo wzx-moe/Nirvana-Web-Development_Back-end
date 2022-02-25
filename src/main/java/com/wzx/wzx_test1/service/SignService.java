@@ -1,9 +1,15 @@
 package com.wzx.wzx_test1.service;
 
+
 import com.wf.captcha.SpecCaptcha;
+import com.wzx.wzx_test1.controller.SignController;
 import com.wzx.wzx_test1.mapper.SignMapper;
+import com.wzx.wzx_test1.mapper.UserMapper;
 import com.wzx.wzx_test1.model.Captcha;
+import com.wzx.wzx_test1.model.User;
 import com.wzx.wzx_test1.utils.DateConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +22,19 @@ import java.util.Date;
 @Service
 public class SignService {
     private static final String SESSION_KEY = "sessionId";
+    private static final Logger logger = LoggerFactory.getLogger(SignController.class);
 
     @Autowired
     SignMapper signMapper;
+    @Autowired
+    UserMapper userMapper;
+
 
     public Captcha createCaptcha(HttpServletRequest request, HttpServletResponse response) {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
         String verCode = specCaptcha.text().toLowerCase();
         String sessionId = getSessionId(request);
+        System.out.println(sessionId);
         if (sessionId == null || !sessionIdIsExist(sessionId)) {
             sessionId = createNewSessionId(request, verCode);
             createNewCookie(response, sessionId);
@@ -45,13 +56,13 @@ public class SignService {
     }
 
     public void createNewCookie(HttpServletResponse response, String sessionId) {
-        Cookie cookie =  new Cookie(SESSION_KEY, sessionId);
+        Cookie cookie = new Cookie(SESSION_KEY, sessionId);
         cookie.setMaxAge(36000);
         cookie.setPath("/");
         response.addCookie(cookie);
     }
 
-    public boolean sessionIdIsExist(String sessionId){
+    public boolean sessionIdIsExist(String sessionId) {
         String sessionIdInSQl = signMapper.getSessionId(sessionId);
         return sessionIdInSQl != null && sessionIdInSQl.length() > 0;
     }
@@ -80,5 +91,50 @@ public class SignService {
             }
         }
         return null;
+    }
+
+    public void setAttribute(HttpSession session, String username, String uid) {
+        if (session == null) {
+            logger.warn("session is null, username#{}, uid#{}", username, uid);
+        } else {
+            session.setAttribute("name", username);
+            session.setAttribute("id", uid);
+        }
+    }
+
+    public void removeAttribute(HttpSession session) {
+        if (session != null) {
+            session.removeAttribute("name");
+            session.removeAttribute("id");
+        }
+    }
+
+    public Integer checkLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, String userName, String passwd, String verCode) {
+        String sessionId = getSessionId(request);
+        User user = userMapper.getOne(userName);
+        System.out.println(signMapper.getVerCode(sessionId));
+        if (!verCode.equals(signMapper.getVerCode(sessionId))) {
+            return -1;
+        } else if (!user.getPassword().equals(passwd)) {
+            return -2;
+        }
+        user.setLoginState(true);
+        user.setSessionId(sessionId);
+        userMapper.update(user);
+        setAttribute(session, user.getName(), user.getId());
+        if (user.isAdmin()){
+            return 1;
+        }
+        return 0;
+    }
+
+    public Integer checkLogout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        User user = userMapper.getOne(session.getAttribute("id").toString());
+        user.setLoginState(false);
+        user.setSessionId(null);
+        userMapper.update(user);
+        removeAttribute(session);
+        removeSessionId(request);
+        return 0;
     }
 }
