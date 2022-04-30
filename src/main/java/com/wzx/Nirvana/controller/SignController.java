@@ -1,14 +1,17 @@
 package com.wzx.Nirvana.controller;
 
+import com.auth0.jwt.JWT;
 import com.wzx.Nirvana.annotation.UserLoginToken;
 import com.wzx.Nirvana.mapper.UserMapper;
 import com.wzx.Nirvana.model.Captcha;
 import com.wzx.Nirvana.model.User;
+import com.wzx.Nirvana.model.UserVO;
 import com.wzx.Nirvana.service.SignService;
 import com.wzx.Nirvana.service.TokenService;
 import com.wzx.Nirvana.utils.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,23 +42,23 @@ public class SignController {
     }
 
 
-    @RequestMapping("getCurrentUser")
-    @ResponseBody
-    public CommonResult<User> getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession();
-        return CommonResult.successReturn(userMapper.getOne(session.getAttribute("id").toString()));
-    }
-
-//    @UserLoginToken
 //    @RequestMapping("getCurrentUser")
 //    @ResponseBody
 //    public CommonResult<User> getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
-//        String token = request.getHeader("token");
-//        return CommonResult.successReturn(userMapper.getOne(JWT.decode(token).getAudience().get(0)));
+//        HttpSession session = request.getSession();
+//        return CommonResult.successReturn(userMapper.getOne(session.getAttribute("id").toString()));
 //    }
 
+    @UserLoginToken
+    @RequestMapping("getCurrentUser")
+    @ResponseBody
+    public CommonResult<User> getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("token");
+        return CommonResult.successReturn(userMapper.getOne(JWT.decode(token).getAudience().get(0)));
+    }
 
-    @RequestMapping("userLogin")
+
+    @RequestMapping("login")
     @ResponseBody
     public CommonResult<String> userLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, String userName, String password, String verCode) {
         logger.info("userLogin");
@@ -72,6 +75,7 @@ public class SignController {
 
     }
 
+    @UserLoginToken
     @RequestMapping("logout")
     @ResponseBody
     public CommonResult<String> logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
@@ -79,11 +83,19 @@ public class SignController {
         return CommonResult.successReturn("0");
     }
 
+    @RequestMapping("/signup")
+    public void save(UserVO userVO) {
+        User user = new User();
+        BeanUtils.copyProperties(userVO, user);
+        //user.setPhone(Integer.parseInt(userVO.getPhone()));
+        userMapper.insert(user);
+    }
+
     @UserLoginToken
     @GetMapping("/getMessage")
     @ResponseBody
-    public String getMessage() {
-        return "你已通过验证";
+    public CommonResult<String> getMessage() {
+        return CommonResult.successReturn("0", "你已通过验证");
     }
 
 
