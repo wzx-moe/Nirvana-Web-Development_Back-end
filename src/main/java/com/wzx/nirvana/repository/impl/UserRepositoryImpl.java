@@ -16,6 +16,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     MongoTemplate mongoTemplate;
 
+    public User getById(String name) {
+        Query query = new Query(Criteria.where("id").is(name));
+        return mongoTemplate.findOne(query, User.class);
+    }
+
     public User getOne(String name) {
         Query query = new Query(Criteria.where("name").is(name));
         return mongoTemplate.findOne(query, User.class);

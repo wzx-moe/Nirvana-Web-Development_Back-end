@@ -5,9 +5,9 @@ import com.wf.captcha.SpecCaptcha;
 import com.wzx.nirvana.controller.SignController;
 import com.wzx.nirvana.model.Captcha;
 import com.wzx.nirvana.model.User;
+import com.wzx.nirvana.repository.UserRepository;
 import com.wzx.nirvana.repository.VerificationCodeRepository;
 import com.wzx.nirvana.utils.DateConverter;
-import com.wzx.nirvana.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,10 +112,10 @@ public class SignService {
     public Integer checkLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, String userName, String passwd, String verCode) {
         String sessionId = getSessionId(request);
         User user = userRepository.getOne(userName);
-        System.out.println(verificationCodeRepository.getVerCode(sessionId));
-        if (!verCode.equals(verificationCodeRepository.getVerCode(sessionId))) {
+        logger.info(verificationCodeRepository.getVerCode(sessionId));
+        if (verCode == null || !verCode.equals(verificationCodeRepository.getVerCode(sessionId))) {
             return -1;
-        } else if (!user.getPassword().equals(passwd)) {
+        } else if (user == null || !user.getPassword().equals(passwd)) {
             return -2;
         }
         user.setLoginState(true);

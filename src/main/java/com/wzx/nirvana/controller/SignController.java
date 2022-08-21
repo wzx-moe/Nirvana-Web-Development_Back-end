@@ -52,7 +52,7 @@ public class SignController {
     @ResponseBody
     public CommonResult<User> getCurrentUser(HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("token");
-        return CommonResult.successReturn(userRepository.getOne(JWT.decode(token).getAudience().get(0)));
+        return CommonResult.successReturn(userRepository.getById(JWT.decode(token).getAudience().get(0)));
     }
 
 
@@ -61,14 +61,14 @@ public class SignController {
     public CommonResult<String> userLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, String userName, String password, String verCode) {
         logger.info("userLogin");
         logger.info("userName: " + userName);
-        logger.info(password);
-        logger.info(verCode);
+        logger.info("password: " + password);
+        logger.info("verCode: " + verCode);
         Integer state = signService.checkLogin(session, request, response, userName, password, verCode);
         if (state < 0) {
             return CommonResult.errorReturn(state == -1 ? "验证码错误" : "用户名或密码错误");
         } else {
             String token = tokenService.getToken(userRepository.getOne(userName));
-            return CommonResult.successReturn(token, state == 1 ? "business_homepage.html" : "/");
+            return CommonResult.successReturn(token, "/");
         }
 
     }
@@ -82,7 +82,7 @@ public class SignController {
     }
 
     @UserLoginToken
-    @GetMapping("/getMessage")
+    @GetMapping("getMessage")
     @ResponseBody
     public CommonResult<String> getMessage() {
         return CommonResult.successReturn("0", "你已通过验证");

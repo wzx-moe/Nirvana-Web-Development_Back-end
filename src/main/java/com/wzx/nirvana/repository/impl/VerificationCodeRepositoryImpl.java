@@ -29,7 +29,7 @@ public class VerificationCodeRepositoryImpl implements VerificationCodeRepositor
         VerificationCode verificationCode = new VerificationCode();
         verificationCode.setVerCode(verCode);
         verificationCode.setSessionId(sessionId);
-        VerificationCode result= mongoTemplate.save(verificationCode);
+        VerificationCode result = mongoTemplate.save(verificationCode);
         if (result != null)
             return 1;
         else

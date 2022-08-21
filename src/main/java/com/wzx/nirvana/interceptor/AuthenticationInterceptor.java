@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.wzx.nirvana.annotation.PassToken;
 import com.wzx.nirvana.annotation.UserLoginToken;
+import com.wzx.nirvana.controller.SignController;
 import com.wzx.nirvana.model.User;
 import com.wzx.nirvana.repository.UserRepository;
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import java.lang.reflect.Method;
  * @date 2018-07-08 20:41
  */
 public class AuthenticationInterceptor implements HandlerInterceptor {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationInterceptor.class);
+    private static final Logger logger = LoggerFactory.getLogger(SignController.class);
     @Autowired
     UserRepository userRepository;
 
@@ -61,7 +62,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 } catch (JWTDecodeException j) {
                     throw new RuntimeException("token格式错误");
                 }
-                User user = userRepository.getOne(userId);
+                User user = userRepository.getById(userId);
+                logger.info(userId);
                 if (user == null) {
                     throw new RuntimeException("用户不存在，请重新登录");
                 }
