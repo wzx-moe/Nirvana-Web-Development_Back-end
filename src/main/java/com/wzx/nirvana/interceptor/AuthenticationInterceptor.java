@@ -13,6 +13,7 @@ import com.wzx.nirvana.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -33,7 +36,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
-        String token = httpServletRequest.getHeader("token");// 从 http 请求头中取出 token
+        String authorization = httpServletRequest.getHeader("Authorization");// 从 http 请求头中取出 token
         // 如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -51,6 +54,16 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if (userLoginToken.required()) {
+                Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-:._~+/]+=*)$", Pattern.CASE_INSENSITIVE);//<token>的值就是真实的表达式配置的值
+
+                if (!StringUtils.startsWithIgnoreCase(authorization, "bearer")) {
+                    throw new RuntimeException("无token，请重新登录");
+                }
+                Matcher matcher = authorizationPattern.matcher(authorization);
+                if (!matcher.matches()) {
+                    throw new RuntimeException("Bearer token is malformed");
+                }
+                String token = matcher.group("token");//从上面的正则表达式中获取token
                 // 执行认证
                 if (token == null) {
                     throw new RuntimeException("无token，请重新登录");

@@ -1,6 +1,5 @@
 package com.wzx.nirvana.controller;
 
-import com.wzx.nirvana.model.Captcha;
 import com.wzx.nirvana.model.Page;
 import com.wzx.nirvana.repository.PageRepository;
 import com.wzx.nirvana.utils.CommonResult;
@@ -12,9 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/api/page")
@@ -41,10 +37,7 @@ public class PageController {
     @ResponseBody
     public CommonResult<String> updatePage(@RequestBody Page page) {
         logger.info("updatePage" + page.getName());
-//        Page page = new Page();
-//        page.setName(name);
-//        page.setContent(content);
-        logger.info(page.toString());
+        //logger.info(page.toString());
         pageRepository.update(page);
         if (pageRepository.update(page) == 1) {
             return CommonResult.successReturn("0", "Update success");
