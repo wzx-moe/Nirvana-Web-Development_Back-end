@@ -1,5 +1,6 @@
 package com.wzx.nirvana.controller;
 
+import com.wzx.nirvana.annotation.UserLoginToken;
 import com.wzx.nirvana.utils.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/api/upload")
@@ -21,14 +25,23 @@ public class UploadController {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadController.class);
 
+    @UserLoginToken
     @RequestMapping("{name}")
     @ResponseBody
     public CommonResult<String> upload(@PathVariable String name, @RequestPart MultipartFile file) throws FileNotFoundException {
         if (file.isEmpty()) return CommonResult.errorReturn(401, "Empty File");
         String fileName = file.getOriginalFilename();
-        String suffixName = fileName != null ? fileName.substring(fileName.lastIndexOf(".")) : null;
+        int index = fileName != null ? fileName.lastIndexOf(".") : 0;
+        String suffixName = fileName != null ? fileName.substring(index + 1) : null;
+        if (index == -1 || suffixName == null || suffixName.isEmpty()) {
+            return CommonResult.errorReturn(401, "Bad File Type");
+        }
+        Set<String> allowSuffix = new HashSet<>(Arrays.asList("jpg", "jpeg", "png", "gif"));
+        if (!allowSuffix.contains(suffixName.toLowerCase())) {
+            return CommonResult.errorReturn(401, "Bad File Type");
+        }
 
-        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/upload/" + name + suffixName;
+        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/upload/" + name;
 
         File dest = new File(filePath);
         if (!dest.getParentFile().exists()) {
@@ -42,6 +55,6 @@ public class UploadController {
             return CommonResult.errorReturn(e.toString());
         }
 
-        return CommonResult.successReturn(dest.getAbsolutePath());
+        return CommonResult.successReturn("/upload/" + name);
     }
 }

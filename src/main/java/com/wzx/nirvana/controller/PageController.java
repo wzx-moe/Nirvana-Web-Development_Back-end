@@ -1,5 +1,6 @@
 package com.wzx.nirvana.controller;
 
+import com.wzx.nirvana.annotation.UserLoginToken;
 import com.wzx.nirvana.model.Page;
 import com.wzx.nirvana.repository.PageRepository;
 import com.wzx.nirvana.utils.CommonResult;
@@ -33,12 +34,13 @@ public class PageController {
         return CommonResult.errorReturn(404, "Page not found");
     }
 
+    @UserLoginToken
     @RequestMapping("update")
     @ResponseBody
     public CommonResult<String> updatePage(@RequestBody Page page) {
         logger.info("updatePage" + page.getName());
         //logger.info(page.toString());
-        pageRepository.update(page);
+        //pageRepository.update(page);
         if (pageRepository.update(page) == 1) {
             return CommonResult.successReturn("0", "Update success");
         }

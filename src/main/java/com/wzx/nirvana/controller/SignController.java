@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.wzx.nirvana.annotation.UserLoginToken;
 import com.wzx.nirvana.model.Captcha;
 import com.wzx.nirvana.model.User;
+import com.wzx.nirvana.model.UserVO;
 import com.wzx.nirvana.repository.UserRepository;
 import com.wzx.nirvana.service.SignService;
 import com.wzx.nirvana.service.TokenService;
@@ -59,16 +60,16 @@ public class SignController {
 
     @RequestMapping("login")
     @ResponseBody
-    public CommonResult<String> userLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, @RequestBody String userName, @RequestBody String password, @RequestBody String verCode) {
+    public CommonResult<String> userLogin(HttpSession session, HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO userVO) {
         logger.info("userLogin");
-        logger.info("userName: " + userName);
-        logger.info("password: " + password);
-        logger.info("verCode: " + verCode);
-        Integer state = signService.checkLogin(session, request, response, userName, password, verCode);
+        logger.info("userName: " + userVO.getUserName());
+        logger.info("password: " + userVO.getPassword());
+        logger.info("verCode: " + userVO.getVerCode());
+        Integer state = signService.checkLogin(session, request, response, userVO.getUserName(), userVO.getPassword(), userVO.getVerCode());
         if (state < 0) {
             return CommonResult.errorReturn(state == -1 ? "验证码错误" : "用户名或密码错误");
         } else {
-            String token = tokenService.getToken(userRepository.getOne(userName));
+            String token = tokenService.getToken(userRepository.getOne(userVO.getUserName()));
             return CommonResult.successReturn(token, "/");
         }
 
