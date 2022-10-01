@@ -64,8 +64,8 @@ public class SignController {
         logger.info("userLogin");
         logger.info("userName: " + userVO.getUserName());
         logger.info("password: " + userVO.getPassword());
-        logger.info("verCode: " + userVO.getVerCode());
-        Integer state = signService.checkLogin(session, request, response, userVO.getUserName(), userVO.getPassword(), userVO.getVerCode());
+        logger.info("verCode: " + userVO.getVerCode().toLowerCase());
+        Integer state = signService.checkLogin(session, request, response, userVO.getUserName(), userVO.getPassword(), userVO.getVerCode().toLowerCase());
         if (state < 0) {
             return CommonResult.errorReturn(state == -1 ? "验证码错误" : "用户名或密码错误");
         } else {

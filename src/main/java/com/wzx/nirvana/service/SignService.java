@@ -11,12 +11,15 @@ import com.wzx.nirvana.utils.DateConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.Duration;
 import java.util.Date;
 
 @Service
@@ -34,7 +37,7 @@ public class SignService {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
         String verCode = specCaptcha.text().toLowerCase();
         String sessionId = getSessionId(request);
-        System.out.println(sessionId);
+        logger.info(sessionId);
         if (sessionId == null || !sessionIdIsExist(sessionId)) {
             sessionId = createNewSessionId(request, verCode);
             createNewCookie(response, sessionId);
@@ -56,10 +59,16 @@ public class SignService {
     }
 
     public void createNewCookie(HttpServletResponse response, String sessionId) {
-        Cookie cookie = new Cookie(SESSION_KEY, sessionId);
-        cookie.setMaxAge(36000);
-        cookie.setPath("/");
-        response.addCookie(cookie);
+        ResponseCookie cookie = ResponseCookie.from(SESSION_KEY, sessionId)
+                //    .httpOnly(true)
+                .secure(true)
+                //   .domain("localhost")  // host
+                .path("/")      // path
+                .maxAge(Duration.ofHours(1))
+                .sameSite("None")  // sameSite
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
     public boolean sessionIdIsExist(String sessionId) {

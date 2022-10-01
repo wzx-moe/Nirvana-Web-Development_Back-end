@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class VerificationCode {
 
     private String verCode;
+
     private String sessionId;
 
 }

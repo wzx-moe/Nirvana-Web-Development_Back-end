@@ -5,17 +5,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
-@Document("Users")
-public class User {
+@Document("Videos")
+public class Video {
 
     @Id
     private String id;
 
     private String name;
 
-    private String password;
+    private String description;
 
-    private boolean loginState;
-
-    private String sessionId;
+    private String url;
 }

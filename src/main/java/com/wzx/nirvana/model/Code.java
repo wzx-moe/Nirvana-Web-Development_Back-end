@@ -8,5 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Code {
 
     private String code;
+
     private String[] url;
 }
