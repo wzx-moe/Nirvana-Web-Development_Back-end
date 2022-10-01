@@ -42,6 +42,7 @@ public class UploadController {
         }
 
         String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/upload/" + name;
+        logger.info(filePath);
 
         File dest = new File(filePath);
         if (!dest.getParentFile().exists()) {
