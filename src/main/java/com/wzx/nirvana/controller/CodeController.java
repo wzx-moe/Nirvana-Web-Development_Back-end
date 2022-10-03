@@ -1,5 +1,6 @@
 package com.wzx.nirvana.controller;
 
+import com.wzx.nirvana.annotation.UserLoginToken;
 import com.wzx.nirvana.model.Code;
 import com.wzx.nirvana.repository.CodeRepository;
 import com.wzx.nirvana.utils.CommonResult;
@@ -32,6 +33,7 @@ public class CodeController {
         return CommonResult.errorReturn(404, "Code not found");
     }
 
+    @UserLoginToken
     @RequestMapping("add")
     @ResponseBody
     public CommonResult<Code> addCode(@RequestBody Code code) {
@@ -43,6 +45,7 @@ public class CodeController {
         return CommonResult.errorReturn(400, "Add failed");
     }
 
+    @UserLoginToken
     @RequestMapping("update")
     @ResponseBody
     public CommonResult<String> updateCode(@RequestBody Code code) {

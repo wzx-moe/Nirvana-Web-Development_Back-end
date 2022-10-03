@@ -8,10 +8,10 @@ public interface VideoRepository {
 
     List<Video> getVideos();
 
-    String getVideoList();
-
     Video addVideo(Video video);
 
     int updateVideo(Video video);
+
+    long deleteVideo(String id);
 
 }

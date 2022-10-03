@@ -60,8 +60,8 @@ public class SignService {
 
     public void createNewCookie(HttpServletResponse response, String sessionId) {
         ResponseCookie cookie = ResponseCookie.from(SESSION_KEY, sessionId)
-                //    .httpOnly(true)
-                //    .secure(true)
+                //   .httpOnly(true)
+                .secure(true)
                 //   .domain("localhost")  // host
                 .path("/")      // path
                 .maxAge(Duration.ofHours(1))
