@@ -48,6 +48,7 @@ public class VideoController {
         return CommonResult.errorReturn(400, "Update failed");
     }
 
+    @UserLoginToken
     @RequestMapping("getVideos")
     @ResponseBody
     public CommonResult<List<Video>> getVideos() {

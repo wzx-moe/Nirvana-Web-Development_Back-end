@@ -57,7 +57,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 Pattern authorizationPattern = Pattern.compile("^Bearer (?<token>[a-zA-Z0-9-:._~+/]+=*)$", Pattern.CASE_INSENSITIVE);//<token>的值就是真实的表达式配置的值
 
                 if (!StringUtils.startsWithIgnoreCase(authorization, "bearer")) {
-                    throw new RuntimeException("无token，请重新登录");
+                    throw new RuntimeException("Token not found, please login");
                 }
                 Matcher matcher = authorizationPattern.matcher(authorization);
                 if (!matcher.matches()) {
@@ -66,26 +66,26 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 String token = matcher.group("token");//从上面的正则表达式中获取token
                 // 执行认证
                 if (token == null) {
-                    throw new RuntimeException("无token，请重新登录");
+                    throw new RuntimeException("Token not found, please login");
                 }
                 // 获取 token 中的 user id
                 String userId;
                 try {
                     userId = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
-                    throw new RuntimeException("token格式错误");
+                    throw new RuntimeException("Bad token format");
                 }
                 User user = userRepository.getById(userId);
                 logger.info(userId);
                 if (user == null) {
-                    throw new RuntimeException("用户不存在，请重新登录");
+                    throw new RuntimeException("User not exist");
                 }
                 // 验证 token
                 JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(user.getPassword())).build();
                 try {
                     jwtVerifier.verify(token);
                 } catch (JWTVerificationException e) {
-                    throw new RuntimeException("用户验证错误");
+                    throw new RuntimeException("Bad token");
                 }
                 return true;
             }

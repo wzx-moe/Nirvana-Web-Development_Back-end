@@ -44,7 +44,7 @@ public class PageController {
         if (pageRepository.update(page) == 1) {
             return CommonResult.successReturn("0", "Update success");
         }
-        return CommonResult.errorReturn(400, "Update failed");
+        return CommonResult.successReturn("0", "Add success");
     }
 
 }

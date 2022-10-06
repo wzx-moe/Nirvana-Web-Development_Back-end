@@ -67,7 +67,7 @@ public class SignController {
         logger.info("verCode: " + userVO.getVerCode().toLowerCase());
         Integer state = signService.checkLogin(session, request, response, userVO.getUserName(), userVO.getPassword(), userVO.getVerCode().toLowerCase());
         if (state < 0) {
-            return CommonResult.errorReturn(state == -1 ? "验证码错误" : "用户名或密码错误");
+            return CommonResult.errorReturn(state == -1 ? "Verification code is not correct" : "Wrong username or password");
         } else {
             String token = tokenService.getToken(userRepository.getOne(userVO.getUserName()));
             return CommonResult.successReturn(token, "/");

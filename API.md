@@ -52,7 +52,7 @@ Attention:
 * 接口名：`/api/login`
 * 说明：校验用户的登录信息，成功的话返回当前登录的用户名
 * 是否必需：是
-* 输入：request body是一个表单(`Content-Type=application/x-www-form-urlencoded`)，包含三个参数`username`/`password`
+* 输入：request body是一个表单(`Content-Type=application/json`)，包含三个参数`username`/`password`
   /`authcode`
   ，后端根据token验证验证码，同时验证用户名和密码
 * 输出：成功的话返回登录后的用户名，例如：`{"code":0,"data":"guest","message":"","success":true,"total":null}`，否则返回错误信息。
@@ -64,3 +64,8 @@ Attention:
 * 是否必需：是
 * 输入：无
 * 输出：无
+
+### Get page content
+
+* Name: `/api/page/{name}`
+* Description: 

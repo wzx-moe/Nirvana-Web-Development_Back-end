@@ -30,6 +30,9 @@ public class PageRepositoryImpl implements PageRepository {
         update.set("content", page.getContent());
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Page.class);
+        if (result.getMatchedCount() == 0) {
+            mongoTemplate.save(page);
+        }
 
         if (result != null)
             return (int) result.getMatchedCount();
