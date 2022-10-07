@@ -35,10 +35,19 @@ public class EventController {
     @UserLoginToken
     @RequestMapping("add")
     @ResponseBody
-    public CommonResult<Event> addEvent(@RequestBody Event event) throws ParseException {
+    public CommonResult<Event> addEvent(@RequestBody Event event) {
         //logger.info(page.toString());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        df.parse(event.getDateTime());
+        try {
+            df.parse(event.getDateTime());
+            Integer.parseInt(event.getRepeatCount());
+        } catch (Exception e) {
+            throw new RuntimeException("Wrong format");
+        }
+        if (event.getRepeat() == null) throw new RuntimeException("Wrong format");
+        if (!event.getRepeat().equals("DAILY") && !event.getRepeat().equals("WEEKLY") &&
+                !event.getRepeat().equals("FORTNIGHTLY") && !event.getRepeat().equals("MONTHLY") &&
+                !event.getRepeatCount().equals("1") ) throw new RuntimeException("Wrong format");
         event = eventRepository.addEvent(event);
         if (event != null) {
             return CommonResult.successReturn(event, "Add success");

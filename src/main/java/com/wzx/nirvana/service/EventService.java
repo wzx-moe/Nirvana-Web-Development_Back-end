@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EventService {
@@ -28,7 +25,7 @@ public class EventService {
         List<Event> allEvents = new ArrayList<>();
         for (Event event : events) {
             allEvents.add(event);
-            if (!event.getRepeatCount().equals("1") || !(event.getRepeatCount() == null)) {
+            if (!(event.getRepeatCount() == null) && !(Objects.equals(event.getRepeatCount(), ""))) {
                 for (int j = 1; j < Integer.parseInt(event.getRepeatCount()); j++) {
                     Event repeatEvent = new Event();
                     repeatEvent.setName(event.getName());
