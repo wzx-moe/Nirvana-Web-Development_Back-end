@@ -41,7 +41,7 @@ public class UploadController {
             return CommonResult.errorReturn(401, "Bad File Type");
         }
 
-        String filePath = ResourceUtils.getURL("classpath:").getPath() + "static/upload/" + name;
+        String filePath = System.getProperty("user.dir") + "/static/upload/" + name;
         logger.info(filePath);
 
         File dest = new File(filePath);
