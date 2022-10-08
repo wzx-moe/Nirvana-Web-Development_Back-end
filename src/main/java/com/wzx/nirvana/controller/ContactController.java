@@ -8,6 +8,7 @@ import com.wzx.nirvana.utils.CommonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Controller;
@@ -29,14 +30,23 @@ public class ContactController {
     @Autowired
     JavaMailSender javaMailSender;
 
+
+    @Value("${Nirvana.mail.subject}")
+    public String subject;
+
+    @Value("${Nirvana.mail.text}")
+    public String text;
+
+
     @RequestMapping("add")
     @ResponseBody
     public CommonResult<Contact> addContact(@RequestBody Contact contact) {
         //logger.info(page.toString());
+
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(contact.getEmail());
-        msg.setSubject("Testing from Spring Boot");
-        msg.setText("Hello World \n Spring Boot Email");
+        msg.setSubject(subject);
+        msg.setText(text);
 
         javaMailSender.send(msg);
         contact = contactRepository.addContact(contact);
