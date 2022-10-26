@@ -2,10 +2,11 @@
 
 ## Install Mongodb
 * Follow th instruction of https://www.mongodb.com/docs/manual/installation/
+* Make sure you have `mongosh` and `mongorestore` installed
 
 ## Import Database
 * Download `Nirvanadb` folder
-* Run `mongorestore --dir={Path-to-Nirvanadb-folder}`
+* Run `mongorestore --dir={Path-to-"Nirvanadb"-folder}`
 
 ## Create User
 * Run `mongosh`

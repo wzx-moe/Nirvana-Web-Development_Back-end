@@ -68,4 +68,9 @@ Attention:
 ### Get page content
 
 * Name: `/api/page/{name}`
-* Description: 
+* Description: Get jason for pages
+* Necessary: Yes
+* Input: Page name in URL
+* Output: Content of the page:`{"success":true,"code":0,"message":null,"data":{"id":"63411eec44d8159b67f50e3f","name":"home","content":[]},"total":null}`
+
+### 
